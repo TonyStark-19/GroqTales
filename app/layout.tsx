@@ -118,12 +118,6 @@ export const metadata: Metadata = {
     ],
     apple: '/apple-touch-icon.png',
   },
-  openGraph: {
-    title: 'GroqTales',
-    description:
-      'AI-Powered Web3 Storytelling Platform | Create, share, and own AI-generated stories and comics as NFTs on the Monad blockchain',
-    images: [{ url: 'https://www.groqtales.xyz/groq_tales_logo.png' }],
-  },
 };
 
 export const viewport = {
@@ -194,9 +188,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body
-        className={`${inter.className} ${comicNeue.variable} optimize-paint`}
-      >
+      <body className={`${inter.className} ${comicNeue.variable} optimize-paint`}>
         <Web3Provider>
           <QueryProvider>
             <ThemeProvider
