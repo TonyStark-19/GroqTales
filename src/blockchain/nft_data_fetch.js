@@ -33,7 +33,7 @@ console.log('===');
 // Fetch metadata for a particular NFT:
 console.log('fetching metadata for a Crypto Coven NFT...');
 const response = await alchemy.nft.getNftMetadata(
-  '0x5180db8F5c931aaE63c74266b211F580155ecac8',
+  '0xc6412aedf66fd1388ee1769df3dbf8d21c2c3f18',
   '1590'
 );
 
