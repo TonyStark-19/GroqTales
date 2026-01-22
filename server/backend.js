@@ -12,6 +12,8 @@ const rateLimit = require('express-rate-limit');
 const compression = require('compression');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const { connectDB, closeDB } = require('./config/db');
 

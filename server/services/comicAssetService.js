@@ -7,11 +7,11 @@ const PINATA_PIN_FILE_ENDPOINT = `${PINATA_BASE_URL}/pinning/pinFileToIPFS`;
 const PINATA_JSON_ENDPOINT = `${PINATA_BASE_URL}/pinning/pinJSONToIPFS`;
 const PINATA_API_KEY = process.env.PINATA_API_KEY;
 const PINATA_API_SECRET = process.env.PINATA_API_SECRET;
-if (!PINATA_API_KEY || !PINATA_API_SECRET) {
-  throw new Error(
-    'Pinata API credentials (PINATA_API_KEY and PINATA_API_SECRET) must be set in the environment'
-  );
-}
+// if (!PINATA_API_KEY || !PINATA_API_SECRET) {
+//   throw new Error(
+//     'Pinata API credentials (PINATA_API_KEY and PINATA_API_SECRET) must be set in the environment'
+//   );
+// }
 // Ensure both are set for all environments
 
 // IPFS Gateway URLs

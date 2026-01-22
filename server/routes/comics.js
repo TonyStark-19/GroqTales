@@ -5,13 +5,13 @@
 
 const express = require('express');
 const router = express.Router();
+const { authRequired } = require('../middleware/auth');
 const {
-  authenticate,
   optionalAuth,
   isComicCreator,
   canEditComic,
   canViewComic,
-} = require('../middleware/auth');
+} = require('../middleware/comic_authorization');
 const multer = require('multer');
 const Comic = require('../models/Comic');
 const ComicPage = require('../models/ComicPage');
@@ -302,7 +302,7 @@ router.post('/', async (req, res) => {
  * PATCH /api/v1/comics/:id
  * Update a comic
  */
-router.patch('/:id', authenticate, async (req, res) => {
+router.patch('/:id', authRequired, async (req, res) => {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -344,7 +344,7 @@ router.patch('/:id', authenticate, async (req, res) => {
  * DELETE /api/v1/comics/:id
  * Delete a comic (only if in draft status)
  */
-router.delete('/:id', authenticate, async (req, res) => {
+router.delete('/:id', authRequired, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -395,7 +395,7 @@ router.delete('/:id', authenticate, async (req, res) => {
  */
 router.post(
   '/:id/cover',
-  authenticate,
+  authRequired,
   upload.single('cover'),
   async (req, res) => {
     try {
@@ -505,7 +505,7 @@ router.get('/:comicId/pages', async (req, res) => {
  */
 router.post(
   '/:comicId/pages',
-  authenticate,
+  authRequired,
   upload.single('image'),
   async (req, res) => {
     try {
@@ -614,7 +614,7 @@ router.post(
  * PATCH /api/v1/comics/:comicId/pages/:pageId
  * Update a comic page
  */
-router.patch('/:comicId/pages/:pageId', authenticate, async (req, res) => {
+router.patch('/:comicId/pages/:pageId', authRequired, async (req, res) => {
   try {
     const { comicId, pageId } = req.params;
     const updates = req.body;
@@ -653,7 +653,7 @@ router.patch('/:comicId/pages/:pageId', authenticate, async (req, res) => {
  * DELETE /api/v1/comics/:comicId/pages/:pageId
  * Delete a comic page
  */
-router.delete('/:comicId/pages/:pageId', authenticate, async (req, res) => {
+router.delete('/:comicId/pages/:pageId', authRequired, async (req, res) => {
   try {
     const { comicId, pageId } = req.params;
 
@@ -688,7 +688,7 @@ router.delete('/:comicId/pages/:pageId', authenticate, async (req, res) => {
  * POST /api/v1/comics/:id/preflight
  * Run preflight checks before publishing
  */
-router.post('/:id/preflight', authenticate, async (req, res) => {
+router.post('/:id/preflight', authRequired, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -712,7 +712,7 @@ router.post('/:id/preflight', authenticate, async (req, res) => {
  * POST /api/v1/comics/:id/publish
  * Publish a comic
  */
-router.post('/:id/publish', authenticate, async (req, res) => {
+router.post('/:id/publish', authRequired, async (req, res) => {
   try {
     const { id } = req.params;
     const { mintNFT = false, network = 'polygon' } = req.body;
@@ -745,7 +745,7 @@ router.post('/:id/publish', authenticate, async (req, res) => {
  * POST /api/v1/comics/:id/unpublish
  * Unpublish a comic (revert to draft)
  */
-router.post('/:id/unpublish', authenticate, async (req, res) => {
+router.post('/:id/unpublish', authRequired, async (req, res) => {
   try {
     const { id } = req.params;
 
