@@ -68,7 +68,12 @@ export function ProfileHeader({ user }: ProfileHeaderProps) {
                 Follow
               </Button>
             )}
-            <Button variant="ghost" size="icon" className="text-slate-400 hover:text-white">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Share profile"
+              className="text-slate-400 hover:text-white"
+            >
               <Share2 className="w-5 h-5" />
             </Button>
           </div>
