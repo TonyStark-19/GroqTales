@@ -1,3 +1,91 @@
+================================================================================
+PERFORMANCE BUDGET IMPLEMENTATION - Issue #335
+Date: 2026-02-11
+================================================================================
+
+## Summary of Optimizations
+
+### 1. Image Optimizations
+- Replaced all <img> tags with Next.js <Image> component across 8 files
+- Added proper width/height, sizes, loading="lazy", and priority attributes
+- Added api.dicebear.com to next.config.js remotePatterns for avatar images
+- Files modified:
+  - app/nft-gallery/page.tsx (3 <img> -> <Image>)
+  - components/story-card.tsx (1 <img> -> <Image>)
+  - components/nft-gallery.tsx (1 <img> -> <Image>)
+  - components/story-details-dialog.tsx (1 <img> -> <Image>)
+  - components/home-creator-card.tsx (1 <img> -> <Image>)
+  - components/footer.tsx (1 <img> -> <Image>)
+
+### 2. Component Optimizations
+- Added React.memo() to NFTCard, NFTDetailModal, and StoryCard components
+- Added useCallback for event handlers in NFTGalleryPage
+- Removed debug console.log statements from production code
+- Removed test modal button from gallery page
+- Converted AnimatedLayout from client to server component (removed 'use client')
+
+### 3. Framer Motion Optimizations
+- Replaced framer-motion whileHover on StoryCard with CSS transitions
+- Replaced framer-motion button animations with CSS hover/active states
+- Added useReducedMotion() support to NFTCard for accessibility
+- Optimized GalaxyBackground:
+  - Reduced star count from 200 to 50 on mobile
+  - Replaced per-star framer-motion animations with CSS @keyframes twinkle
+  - Reduced meteor count from 12 to 3 on mobile
+  - Reduced large meteors from 3 to 1 on mobile
+  - Static background for prefers-reduced-motion users
+  - CSS-only planet animations on mobile (no framer-motion overhead)
+
+### 4. Bundle Optimizations
+- Extended optimizePackageImports in next.config.js:
+  - Added: framer-motion, date-fns, recharts, @heroicons/react
+- Added api.dicebear.com to image remotePatterns
+
+### 5. Accessibility
+- Added @media (prefers-reduced-motion: reduce) to globals.css
+- Disables all animations for users who prefer reduced motion
+- Static star background shown instead of animated galaxy
+
+### 6. CI/CD
+- Created .github/workflows/lighthouse-ci.yml
+- Runs on push to main and pull requests
+- Tests 3 routes: /, /nft-gallery, /stories/[id]
+- Fails build if performance score < 80
+- Uploads reports as artifacts
+- Posts results as PR comment
+
+### 7. Documentation
+- Created docs/performance-baseline.md (full audit)
+- Created docs/performance-budget.md (targets and budgets)
+
+## Files Modified
+- app/nft-gallery/page.tsx
+- app/globals.css
+- components/story-card.tsx
+- components/nft-gallery.tsx
+- components/story-details-dialog.tsx
+- components/home-creator-card.tsx
+- components/footer.tsx
+- components/galaxy-background.tsx
+- components/layout/animated-layout.tsx
+- next.config.js
+
+## Files Created
+- docs/performance-baseline.md
+- docs/performance-budget.md
+- .github/workflows/lighthouse-ci.yml
+
+## Performance Budget Targets
+| Metric | Mobile Target | Desktop Target |
+|--------|---------------|----------------|
+| LCP    | < 2.5s        | < 2.0s         |
+| TBT    | < 200ms       | < 100ms        |
+| CLS    | < 0.1         | < 0.1          |
+| FCP    | < 1.8s        | < 1.5s         |
+
+================================================================================
+PREVIOUS BUILD LOG
+================================================================================
 
 > groqtales@1.2.8 build
 > NEXT_PUBLIC_BUILD_MODE=true next build
