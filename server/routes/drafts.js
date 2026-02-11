@@ -1,6 +1,7 @@
 const express = require('express');
 
 const Draft = require('../models/Draft');
+const { authRequired } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -110,7 +111,7 @@ function serializeDraft(draftDoc) {
   };
 }
 
-router.get('/', async (req, res) => {
+router.get('/', authRequired, async (req, res) => {
   try {
     const { draftKey, ownerWallet } = req.query;
 
@@ -135,7 +136,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/', async (req, res) => {
+router.put('/', authRequired, async (req, res) => {
   try {
     const {
       draftKey,
@@ -229,7 +230,7 @@ router.put('/', async (req, res) => {
   }
 });
 
-router.patch('/', async (req, res) => {
+router.patch('/', authRequired, async (req, res) => {
   try {
     const { draftKey, versionId, maxVersions } = req.body || {};
     if (!draftKey || typeof draftKey !== 'string') {
@@ -277,7 +278,7 @@ router.patch('/', async (req, res) => {
   }
 });
 
-router.delete('/', async (req, res) => {
+router.delete('/', authRequired, async (req, res) => {
   try {
     const { draftKey } = req.query;
     if (!draftKey || typeof draftKey !== 'string') {

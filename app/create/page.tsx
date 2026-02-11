@@ -355,6 +355,7 @@ export default function CreateStoryPage() {
   // Check authentication and restore draft context
   useEffect(() => {
     const checkAuth = () => {
+      console.log('Checking authentication and story data');
       const isAdmin = localStorage.getItem('adminSession') === 'true';
 
       if (!account && !isAdmin) {
