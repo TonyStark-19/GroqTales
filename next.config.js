@@ -38,6 +38,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'gateway.pinata.cloud',
       },
+      {
+        protocol: 'https',
+        hostname: 'api.dicebear.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
     ],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
@@ -115,13 +123,30 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() { 
+    const envUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiUrl = (envUrl && envUrl.startsWith('http')) 
+      ? envUrl 
+      : 'http://localhost:3001';
 
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${apiUrl}/api/:path*`,
+      },
+    ];
+  },
   // Output configuration for static export if needed
   output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
 
   // Experimental features
   experimental: {
-    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      'date-fns',
+      'recharts',
+    ],
     turbo: {
       rules: {
         '*.svg': {
