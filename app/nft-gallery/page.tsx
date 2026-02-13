@@ -784,11 +784,14 @@ export default function NFTGalleryPage() {
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <label htmlFor="search-input" className="sr-only">Search stories or authors</label>
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" aria-hidden="true" />
               <Input
+                id="search-input"
                 placeholder="Search stories or authors..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                aria-label="Search stories or authors"
                 className="pl-10
                 text-foreground
                 placeholder:text-muted-foreground
@@ -806,6 +809,7 @@ export default function NFTGalleryPage() {
           <div className="flex gap-2">
             <Select value={selectedGenre} onValueChange={setSelectedGenre}>
               <SelectTrigger
+                aria-label="Filter by genre"
                 className="
                 w-[150px]
                 bg-card
@@ -839,6 +843,7 @@ export default function NFTGalleryPage() {
               }
             >
               <SelectTrigger
+                aria-label="Sort NFTs by"
                 className="
                 w-[180px]
                 bg-card
