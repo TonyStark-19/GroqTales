@@ -177,7 +177,7 @@ router.get('/', async (req, res) => {
 /**
  * @swagger
  * /api/v1/nft/mint:
- *   get:
+ *   post:
  *     tags:
  *       - NFT
  *     summary: Mint nft
@@ -201,7 +201,7 @@ router.get('/', async (req, res) => {
  *                  type: string
  *                  required: true
  *                price:
- *                  type: string
+ *                  type: integer
  *                  default: 0
  *                  required: false
  *     responses:
@@ -284,7 +284,7 @@ router.post('/mint', authRequired, async (req, res) => {
 /**
  * @swagger
  * /api/v1/nft/burn/{id} :
- *   get:
+ *   delete:
  *     tags:
  *       - NFT
  *     summary: burn nft
@@ -352,7 +352,47 @@ router.delete('/burn/:Id', authRequired, async (req, res) => {
 
 
 // NFT Marketplace Endpoints
-
+/**
+ * @swagger
+ * /api/v1/nft/list/{tokenId}:
+ *   patch:
+ *     tags:
+ *       - NFT
+ *     summary: List NFT for sale
+ *     description: Lists an NFT for sale by setting its price.
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: tokenId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The token ID of the NFT to list
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - price
+ *             properties:
+ *               price:
+ *                 type: number
+ *                 example: 100
+ *     responses:
+ *       200:
+ *         description: NFT listed successfully
+ *       400:
+ *         description: Invalid input or NFT already listed
+ *       403:
+ *         description: User is not the owner
+ *       404:
+ *         description: NFT not found
+ *       500:
+ *         description: Internal server error
+ */
 // PATCH /api/v1/nft/list/:tokenId
 router.patch('/list/:tokenId', authRequired, async (req, res) => {
   try {
@@ -395,6 +435,35 @@ router.patch('/list/:tokenId', authRequired, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/nft/remove/{tokenId}:
+ *   patch:
+ *     tags:
+ *       - NFT
+ *     summary: remove NFT from sale
+ *     description: removes an NFT from sale
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: tokenId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The token ID of the NFT to remove
+ *     responses:
+ *       200:
+ *         description: NFT removed successfully
+ *       400:
+ *         description: Invalid input 
+ *       403:
+ *         description: User is not the owner
+ *       404:
+ *         description: NFT not found
+ *       500:
+ *         description: Internal server error
+ */
 // PATCH /api/v1/nft/remove/:tokenId
 router.patch('/remove/:tokenId', authRequired, async (req, res) => {
   try {
@@ -425,6 +494,35 @@ router.patch('/remove/:tokenId', authRequired, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/nft/buy/{tokenId}:
+ *   patch:
+ *     tags:
+ *       - NFT
+ *     summary: buy NFT from sale
+ *     description: buys an NFT from sale
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: tokenId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The token ID of the NFT to remove
+ *     responses:
+ *       200:
+ *         description: NFT bought successfully
+ *       400:
+ *         description: Invalid input 
+ *       403:
+ *         description: User is not the owner
+ *       404:
+ *         description: NFT not found
+ *       500:
+ *         description: Internal server error
+ */
 // PATCH /api/v1/nft/buy/:tokenId
 router.patch('/buy/:tokenId', authRequired, async (req, res) => {
   try {
@@ -456,6 +554,47 @@ router.patch('/buy/:tokenId', authRequired, async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/nft/update-price/{tokenId}:
+ *   patch:
+ *     tags:
+ *       - NFT
+ *     summary: Update price of alisted nft
+ *     description: Updates the price of a listed nft
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: tokenId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The token ID of the NFT to list
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - price
+ *             properties:
+ *               price:
+ *                 type: number
+ *                 example: 100
+ *     responses:
+ *       200:
+ *         description: NFT price updated successfully
+ *       400:
+ *         description: Invalid input of price is missing
+ *       403:
+ *         description: User is not the owner
+ *       404:
+ *         description: NFT not found
+ *       500:
+ *         description: Internal server error
+ */
 // PATCH /api/v1/nft/update-price/:tokenId
 router.patch('/update-price/:tokenId', authRequired, async (req, res) => {
   try {
