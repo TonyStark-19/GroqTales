@@ -2,33 +2,34 @@ const router = require("express").Router();
 const {authRequired: requireAuth} = require("../../middleware/auth");
 const User= require("../../models/User");
 
-// router.get("/", requireAuth, async (req, res) => {
-// //   if (!req.user.wallet) {
-// //     return res.json({
-// //         success: true,
-// //         data: null,
-// //     });
-// // }
-// try {
-// return res.json({
-//     success: true,
-//     data: {
-//         address: req.user.wallet?.address ?? "",
-//         // network: req.user.wallet.network,
-//         // provider: req.user.wallet.provider,
-//         connected: !!req.user.wallet?.address,
-//         verified: req.user.wallet?.verified ?? false,
-//         //lastConnectedAt: req.user.wallet.lastConnectedAt,
-//     },
-// });
-// } catch(err){
-//     console.error("Fetch wallet failed:", err);
-//     res.status(500).json({
-//         success: false,
-//         error: {message: "Failed to fetch wallet"},
+router.get("/", requireAuth, async (req, res) => {
+//   if (!req.user.wallet) {
+//     return res.json({
+//         success: true,
+//         data: null,
 //     });
 // }
-// });
+try {
+    const wallet = req.user.wallet || {};
+    return res.json({
+    success: true,
+    data: {
+        address: wallet.address ?? "",
+        // network: req.user.wallet.network,
+        // provider: req.user.wallet.provider,
+        connected: !!wallet.address,
+        verified: wallet.verified ?? false,
+        lastConnectedAt: wallet.lastConnectedAt?? null,
+    },
+});
+} catch(err){
+    console.error("Fetch wallet failed:", err);
+    res.status(500).json({
+        success: false,
+        error: {message: "Failed to fetch wallet"},
+    });
+}
+});
 
 router.put("/", requireAuth, async(req,res)=>{
     try {
@@ -38,8 +39,8 @@ router.put("/", requireAuth, async(req,res)=>{
             return res
             .status(400)
             .json({
-                // success: false,
-                error:  "A valid wallet address is required",
+                success: false,
+                error: {message:  "A valid wallet address is required"},
 
                 });
         }
@@ -48,13 +49,13 @@ router.put("/", requireAuth, async(req,res)=>{
             return res
             .status(404)
             .json({
-                // success: false,
-                error:  "user not found",
+                success: false,
+                error: {message: "user not found"},
 
                 });
         }
     user.wallet = {
-        ...user.wallet?.toObject?.()??{},
+        ...(user.wallet?.toObject?.()??{}),
         address,
         connected: true,
         // network,
@@ -70,8 +71,8 @@ router.put("/", requireAuth, async(req,res)=>{
     } catch(err){
         console.error("Wallet update failed:", err);
         res.status(500).json({
-            //success: false,
-            error:  "server error",
+            success: false,
+            error: {message: "server error"},
     });
     }
     

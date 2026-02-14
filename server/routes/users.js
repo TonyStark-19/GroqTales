@@ -27,23 +27,33 @@ router.get('/profile', authRequired, async (req, res) => {
 // GET /api/v1/users/profile/:walletAddress - Get user profile by wallet address
 router.get('/profile/:walletAddress', async (req, res) => {
   try {
-    //const { walletAddress } = req.params;
+    const { walletAddress } = req.params;
 
-    const addr = req.params.walletAddress.toLowerCase();
-    const user = await User.findOne(
+    if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)){
+      return res.status(400).json({error: "Invalid wallet address"});
+    }
+    const addr = walletAddress.toLowerCase();
+    const user = await User.findOneAndUpdate(
       { "wallet.address": addr },
-      { 
+       {
         $setOnInsert: { 
-          walletAddress: addr, 
-          username: `user_${addr.slice(-8)}` 
+          wallet: {address: addr}, 
+          username: `user_${addr.slice(-6)}` 
         } 
+      
       },
       { 
         upsert: true, 
         new: true, 
-        projection: 'username bio avatar badges firstName lastName walletAddress createdAt' 
+        //projection: 'username bio avatar badges firstName lastName walletAddress createdAt' 
       }
-    ).lean();
+    )
+    .select('username bio avatar badges firstName lastName wallet createdAt')
+    .lean();
+
+    // if(!user){
+    //   return res.status(404).json({error: "User not found"});
+    // }
     const stories = await Story.find({ author: user._id })
       .sort({ createdAt: -1 })
       .lean();

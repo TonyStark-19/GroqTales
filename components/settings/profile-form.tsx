@@ -77,7 +77,7 @@ export function ProfileForm() {
   const onSubmit = async (data: ProfileData) => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/settings/profile", {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/settings/profile`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

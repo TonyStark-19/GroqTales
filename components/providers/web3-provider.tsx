@@ -13,11 +13,11 @@ interface Web3ContextType {
   chainId: number | null;
   balance: string | null;
   connected: boolean;
-  // connecting: boolean;
+  connecting: boolean;
   connectWallet: () => Promise<void>;
-  disconnectWallet: () => void;
-  // networkName: string;
-  // ensName: string | null;
+  disconnectWallet: () => Promise<void>;
+  networkName: string;
+  ensName: string | null;
   // switchNetwork: (chainId: number) => Promise<void>;
   // mintNFTOnBase: (
   //   metadata: any,
@@ -93,9 +93,9 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
   const [balance, setBalance] = useState<string | null>(null);
   const [connected, setConnected] = useState(false);
 
-  // const [connecting, setConnecting] = useState(false);
-  // const [networkName, setNetworkName] = useState('Unknown');
-  // const [ensName, setEnsName] = useState<string | null>(null);
+  const [connecting, setConnecting] = useState(false);
+  const [networkName, setNetworkName] = useState('Unknown');
+  const [ensName, setEnsName] = useState<string | null>(null);
   const [showInstallModal, setShowInstallModal] = useState(false);
 
   //helper to get ethereum safely with type casting
@@ -106,7 +106,15 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     return null;
   }, []);
 
-  const disconnectWallet = useCallback(()=>{
+  const disconnectWallet = useCallback(async()=>{
+    try{
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/settings/wallet`,{
+        method: "DELETE",
+        credentials: "include",
+      });
+    } catch(err){
+      console.error("Failed to disconnect wallet on server:", err);
+    }
     setAccount(null);
     setChainId(null);
     setBalance(null);
@@ -192,7 +200,7 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
         //setChainId(chainIdNum);
         setBalance(balanceEth.toFixed(4));
         setConnected(true);
-        await fetch("/api/v1/settings/wallet",{
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/settings/wallet`,{
           method: "PUT",
           headers: {"Content-Type":"application/json"},
           credentials: "include",
@@ -271,11 +279,11 @@ export function Web3Provider({ children }: { children: React.ReactNode }) {
     chainId,
     balance,
     connected,
-    // connecting,
+    connecting,
     connectWallet,
     disconnectWallet,
-    // networkName,
-    // ensName,
+    networkName,
+    ensName,
     // switchNetwork,
     // mintNFTOnBase,
     // mintNFTOnMonad,

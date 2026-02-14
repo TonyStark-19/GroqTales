@@ -31,7 +31,11 @@ export default function ProfilePage() {
 
     const fetchProfile = async () => {
 
-      if (!walletFromUrl)  return;
+      if (!walletFromUrl){
+        setLoading(false);
+        return;
+      }
+        
         try {
           setLoading(true);
           setError(false);

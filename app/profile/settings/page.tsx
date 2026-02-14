@@ -129,15 +129,20 @@ export default function SettingsPage() {
       }
       const userData = json.data;
       setUser(userData);
-      setNotifications(userData.preferences?.notifications ??{
-        comments: true,
-        likes: true,
-        follows: true,
+      setNotifications({
+        comments: userData.preferences?.notifications?.comments ?? true,
+        likes: userData.preferences?.notifications?.likes??true,
+        follows: userData.preferences?.notifications?.follows??true,
+        email: userData.preferences?.notifications?.email ??true,
+        push:userData.preferences?.notifications?.push ?? false,
+        sms:userData.preferences?.notifications?.sms ?? false,
+        marketing:userData.preferences?.notifications?.marketing ?? false,
+        updates:userData.preferences?.notifications?.updates ?? true,
       }
     );
       setPrivacy(userData.preferences?.privacy ?? {
-        profileVisibile: true,
-        activityVisibile: true,
+        profileVisible: true,
+        activityVisible: true,
       });
 
       form.reset({
@@ -161,6 +166,28 @@ const onSubmit = (data: ProfileFormValues) => {
     // In a real app, this would save the data to the server
     console.log(data);
     // Show success message or redirect
+  };
+  const savePreferences = async()=>{
+    try{
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/v1/settings/preferences`,
+        {
+          method: "PUT",
+          headers: {"Content-Type":"application/json"},
+          credentials: "include",
+          body: JSON.stringify({
+            notifications,
+            privacy,
+          }),
+        }
+      );
+      if(!res.ok){
+        throw new Error("Failed to save preferences");
+      }
+      console.log("Preferences saved");
+    } catch(err){
+      console.error("Failed to save preferences:", err);
+    }
   };
   if(loading || !user)
     return <div className="p-8">Loading...</div>
@@ -426,10 +453,10 @@ const onSubmit = (data: ProfileFormValues) => {
                         id="comments" 
                         checked={notifications.comments}
                         onCheckedChange={(value)=>
-                          setNotifications({
-                            ...notifications,
+                          setNotifications(prev=>({
+                            ...prev,
                             comments: value, 
-                          })
+                          }))
                         }
                       />
                     </div>
@@ -446,10 +473,10 @@ const onSubmit = (data: ProfileFormValues) => {
                       <Switch id="likes" 
                       checked={notifications.likes}
                         onCheckedChange={(value)=>
-                          setNotifications({
-                            ...notifications,
+                          setNotifications(prev =>({
+                            ...prev,
                             likes: value,
-                            })
+                            }))
                           }
                      />
                     </div>
@@ -517,7 +544,15 @@ const onSubmit = (data: ProfileFormValues) => {
                           Receive emails about new features and platform updates
                         </p>
                       </div>
-                      <Switch id="newsletter" />
+                      <Switch 
+                      id="newsletter" 
+                      checked={notifications.updates}
+                      onCheckedChange={(value)=>
+                        setNotifications(prev=>({
+                        ...prev,
+                        updates: value,
+                      }))
+                    }/>
                     </div>
                   </div>
                 </div>
@@ -1076,7 +1111,7 @@ const onSubmit = (data: ProfileFormValues) => {
               </CardContent>
               <CardFooter className="flex justify-end space-x-4 border-t pt-6">
                 <Button variant="outline">Cancel</Button>
-                <Button>Save Privacy Settings</Button>
+                <Button onClick={savePreferences}>Save Privacy Settings</Button>
               </CardFooter>
             </Card>
           </div>
