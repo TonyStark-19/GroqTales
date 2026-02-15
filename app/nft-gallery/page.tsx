@@ -66,7 +66,7 @@ const AnimatePresence = ({ children, ...rest }: { children: React.ReactNode } & 
         if (!mounted) return;
         if (mod && mod.AnimatePresence) setComp(() => mod.AnimatePresence);
       })
-      .catch(() => {});
+      .catch(() => { });
     return () => {
       mounted = false;
     };
@@ -98,7 +98,7 @@ function useReducedMotion(): boolean {
 const IconsLoadable = dynamic(() => import('lucide-react').then(mod => ({
   default: () => (
     <div style={{ display: 'flex', gap: '4px' }}>
-      <span>♥</span> <span>👁</span> <span>🛒</span> <span>🔍</span> 
+      <span>♥</span> <span>👁</span> <span>🛒</span> <span>🔍</span>
       <span>⚙</span> <span>📈</span> <span>⭐</span> <span>🎨</span>
     </div>
   )
@@ -394,10 +394,10 @@ const NFTCard = memo(function NFTCard({
   const cardMotionProps = prefersReducedMotion
     ? {}
     : {
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.3 },
-      };
+      initial: { opacity: 0, y: 20 },
+      animate: { opacity: 1, y: 0 },
+      transition: { duration: 0.3 },
+    };
 
   return (
     <motion.div
@@ -532,18 +532,18 @@ const NFTDetailModal = memo(function NFTDetailModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-900 text-white border-gray-700">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 border-slate-200 dark:border-slate-800">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-white">{nft.title}</DialogTitle>
-          <DialogDescription className="text-gray-300">
+          <DialogTitle className="text-2xl font-bold text-foreground">{nft.title}</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             by {nft.author}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 py-4">
           {/* NFT Image Section */}
           <div className="space-y-4">
-            <div className="relative rounded-lg overflow-hidden border-2 border-gray-600 aspect-[2/3] max-h-[500px]">
+            <div className="relative rounded-lg overflow-hidden border-2 border-slate-200 dark:border-slate-800 aspect-[2/3] max-h-[500px]">
               <Image
                 src={nft.coverImage}
                 alt={nft.title}
@@ -559,20 +559,19 @@ const NFTDetailModal = memo(function NFTDetailModal({
                 </div>
               )}
               {nft.rarity && (
-                <div className={`absolute top-3 right-3 px-3 py-1 rounded-full font-bold text-sm ${
-                  nft.rarity === 'Legendary' ? 'bg-yellow-500 text-yellow-900' :
+                <div className={`absolute top-3 right-3 px-3 py-1 rounded-full font-bold text-sm ${nft.rarity === 'Legendary' ? 'bg-yellow-500 text-yellow-900' :
                   nft.rarity === 'Epic' ? 'bg-purple-500 text-white' :
-                  nft.rarity === 'Rare' ? 'bg-blue-500 text-white' :
-                  'bg-gray-500 text-white'
-                }`}>
+                    nft.rarity === 'Rare' ? 'bg-blue-500 text-white' :
+                      'bg-gray-500 text-white'
+                  }`}>
                   {nft.rarity}
                 </div>
               )}
             </div>
-            
+
             {/* Action Buttons */}
             <div className="flex gap-3">
-              <Button 
+              <Button
                 onClick={() => onLike(nft.id)}
                 variant="outline"
                 className="flex-1"
@@ -580,7 +579,7 @@ const NFTDetailModal = memo(function NFTDetailModal({
                 <Heart className="w-4 h-4 mr-2" />
                 Like ({nft.likes})
               </Button>
-              <Button 
+              <Button
                 onClick={() => onPurchase(nft.id)}
                 className="flex-1"
               >
@@ -589,44 +588,44 @@ const NFTDetailModal = memo(function NFTDetailModal({
               </Button>
             </div>
           </div>
-          
+
           {/* NFT Details Section */}
           <div className="space-y-6">
             {/* Description */}
             <div>
               <h3 className="text-lg font-semibold mb-2">Description</h3>
-              <p className="text-gray-700 dark:text-gray-300">{nft.description}</p>
+              <p className="text-slate-700 dark:text-slate-300">{nft.description}</p>
             </div>
-            
+
             {/* Stats */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Story Stats</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-lg">
+                  <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400">
                     <Heart className="w-4 h-4 text-red-500" />
                     <span className="font-medium">Likes</span>
                   </div>
                   <div className="text-xl font-bold mt-1">{nft.likes}</div>
                 </div>
-                <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-lg">
+                  <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400">
                     <Eye className="w-4 h-4 text-blue-500" />
                     <span className="font-medium">Views</span>
                   </div>
                   <div className="text-xl font-bold mt-1">{nft.views}</div>
                 </div>
                 {nft.sales && (
-                  <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-                    <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+                  <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-lg">
+                    <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400">
                       <ShoppingCart className="w-4 h-4 text-green-500" />
                       <span className="font-medium">Sales</span>
                     </div>
                     <div className="text-xl font-bold mt-1">{nft.sales}</div>
                   </div>
                 )}
-                <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded-lg">
-                  <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+                <div className="bg-slate-100 dark:bg-slate-800 p-3 rounded-lg">
+                  <div className="flex items-center space-x-2 text-slate-600 dark:text-slate-400">
                     <Palette className="w-4 h-4 text-purple-500" />
                     <span className="font-medium">Genre</span>
                   </div>
@@ -634,35 +633,33 @@ const NFTDetailModal = memo(function NFTDetailModal({
                 </div>
               </div>
             </div>
-            
+
             {/* Additional Information */}
             <div>
               <h3 className="text-lg font-semibold mb-3">Additional Information</h3>
-              <div className="space-y-3 bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+              <div className="space-y-3 bg-slate-50 dark:bg-slate-900/50 p-4 rounded-lg border border-slate-100 dark:border-slate-800">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 font-medium">NFT ID:</span>
-                  <span className="font-mono bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded">{nft.id}</span>
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">NFT ID:</span>
+                  <span className="font-mono bg-slate-200 dark:bg-slate-800 px-2 py-1 rounded">{nft.id}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 font-medium">Price:</span>
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Price:</span>
                   <span className="font-bold text-green-600 dark:text-green-400 text-lg">{nft.price}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-300 font-medium">Rarity:</span>
-                  <span className={`font-medium px-2 py-1 rounded ${
-                    (nft.rarity || 'Common') === 'Legendary' ? 'bg-yellow-500 text-yellow-900' :
+                  <span className="text-muted-foreground font-medium">Rarity:</span>
+                  <span className={`font-medium px-2 py-1 rounded ${(nft.rarity || 'Common') === 'Legendary' ? 'bg-yellow-500 text-yellow-900' :
                     (nft.rarity || 'Common') === 'Epic' ? 'bg-purple-500 text-white' :
-                    (nft.rarity || 'Common') === 'Rare' ? 'bg-blue-500 text-white' :
-                    'bg-gray-500 text-white'
-                  }`}>
+                      (nft.rarity || 'Common') === 'Rare' ? 'bg-blue-500 text-white' :
+                        'bg-gray-500 text-white'
+                    }`}>
                     {nft.rarity || 'Common'}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-300 font-medium">Status:</span>
-                  <span className={`font-medium px-2 py-1 rounded ${
-                    nft.isTop10 ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-500 text-white'
-                  }`}>
+                  <span className="text-muted-foreground font-medium">Status:</span>
+                  <span className={`font-medium px-2 py-1 rounded ${nft.isTop10 ? 'bg-yellow-400 text-yellow-900' : 'bg-gray-500 text-white'
+                    }`}>
                     {nft.isTop10 ? 'Featured' : 'Available'}
                   </span>
                 </div>
