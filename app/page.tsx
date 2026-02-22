@@ -12,33 +12,16 @@ import {
   Layers,
   Share2,
 } from 'lucide-react';
-import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import Link from 'next/link';
-import React, { Suspense, useEffect, useState } from 'react';
+import React from 'react';
 
 import { useWeb3 } from '@/components/providers/web3-provider';
 import { TrendingStories } from '@/components/trending-stories';
 import { Button } from '@/components/ui/button';
 
-// Lazy-load Spline ONLY after the page has rendered
-const Spline = dynamic(
-  () =>
-    import('@splinetool/react-spline')
-      .then((mod) => mod.default || mod)
-      .catch(() => () => null),
-  { ssr: false, loading: () => null }
-);
-
 export default function Home() {
   const { account, connectWallet } = useWeb3();
-  const [showSpline, setShowSpline] = useState(false);
-  const [splineReady, setSplineReady] = useState(false);
-
-  // Delay Spline load until after page content is painted
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSpline(true), 1500);
-    return () => clearTimeout(timer);
-  }, []);
 
   // Animation variants
   const stagger = {
@@ -113,40 +96,38 @@ export default function Home() {
   ];
 
   const genres = [
-    { name: 'Sci-Fi', icon: <Zap className="w-7 h-7" />, color: 'var(--comic-cyan)' },
-    { name: 'Fantasy', icon: <Layers className="w-7 h-7" />, color: 'var(--comic-purple)' },
-    { name: 'Mystery', icon: <Shield className="w-7 h-7" />, color: 'var(--comic-blue)' },
-    { name: 'Romance', icon: <Users className="w-7 h-7" />, color: 'var(--comic-pink)' },
-    { name: 'Horror', icon: <Zap className="w-7 h-7" />, color: 'var(--comic-red)' },
-    { name: 'Adventure', icon: <Share2 className="w-7 h-7" />, color: 'var(--comic-orange)' },
+    { name: 'Sci-Fi', color: 'var(--comic-cyan)', image: 'https://ik.imagekit.io/panmac/tr:f-auto,w-740,pr-true//bcd02f72-b50c-0179-8b4b-5e44f5340bd4/175e79ee-ed99-45d5-846f-5af0be2ab75b/sub%20genre%20guide.webp' },
+    { name: 'Fantasy', color: 'var(--comic-purple)', image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhv_45322WkBmu9o8IvYfcxEXDTbGzORCAgwdP0OF1Zq4izhDr6PT-bkqYj0BJJ_HP02Op2Y0vrNOQlN6tuf0cnu4GwWqprIJrcn89pYY6uiu89gXLr5UXIZ3h6-2HWvO-SjaqzeMRoiXk/s1600/latest.jpg' },
+    { name: 'Mystery', color: 'var(--comic-blue)', image: 'https://celadonbooks.com/wp-content/uploads/2020/03/what-is-a-mystery.jpg' },
+    { name: 'Romance', color: 'var(--comic-pink)', image: 'https://escapetoromance.com/wp-content/uploads/sites/172/2017/05/iStock-503130452.jpg' },
+    { name: 'Horror', color: 'var(--comic-red)', image: 'https://www.nyfa.edu/wp-content/uploads/2022/11/nosferatu.jpg' },
+    { name: 'Adventure', color: 'var(--comic-orange)', image: 'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&q=80' },
+    { name: 'Historical Fiction', color: '#8B6914', image: 'https://celadonbooks.com/wp-content/uploads/2020/03/Historical-Fiction-scaled.jpg' },
+    { name: 'Young Adult', color: '#FF69B4', image: 'https://advicewonders.wordpress.com/wp-content/uploads/2014/09/ya.jpg' },
+    { name: 'Comedy', color: 'var(--comic-yellow)', image: 'https://motivatevalmorgan.com/wp-content/uploads/2021/01/Why-Comedy-is-a-Genre-for-All.png' },
+    { name: 'Dystopian', color: '#4A0E4E', image: 'https://storage.googleapis.com/lr-assets/shared/1655140535-shutterstock_1936124599.jpg' },
+    { name: 'Historical Fantasy', color: '#DAA520', image: 'https://upload.wikimedia.org/wikipedia/commons/1/16/The_violet_fairy_book_%281906%29_%2814566722029%29.jpg' },
+    { name: 'Paranormal', color: '#6B3FA0', image: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?w=600&h=400&fit=crop' },
   ];
 
   return (
     <main className="flex min-h-screen flex-col relative overflow-hidden">
       {/* ═══════════════════════════════════════
-          SPLINE 3D — Fixed Full-Page Background
+          HERO SECTION with background.jpeg
           ═══════════════════════════════════════ */}
-      {showSpline && (
-        <div
-          className="fixed inset-0 z-0 transition-opacity duration-1000"
-          style={{ opacity: splineReady ? 1 : 0 }}
-        >
-          <Suspense fallback={null}>
-            <Spline
-              scene="/storybook.spline"
-              onLoad={() => setSplineReady(true)}
-            />
-          </Suspense>
-        </div>
-      )}
+      <section className="relative min-h-[95vh] flex flex-col items-center justify-center overflow-hidden">
+        {/* Hero background image */}
+        <Image
+          src="/background.jpeg"
+          alt=""
+          fill
+          priority
+          className="object-cover"
+          aria-hidden="true"
+        />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/50 dark:bg-black/60 z-[1]" />
 
-      {/* Fallback gradient while Spline loads */}
-      {!splineReady && <div className="fixed inset-0 z-0 hero-gradient" />}
-
-      {/* ═══════════════════════════════════════
-          HERO SECTION
-          ═══════════════════════════════════════ */}
-      <section className="relative min-h-[95vh] flex flex-col items-center justify-center overflow-hidden z-[1]">
         {/* Hero text content */}
         <motion.div
           className="relative z-10 container mx-auto px-6 text-center pointer-events-none"
@@ -157,8 +138,8 @@ export default function Home() {
           {/* Main heading */}
           <motion.h1
             variants={fadeUp}
-            className="comic-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] text-foreground leading-[0.9] mb-8"
-            style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.3)' }}
+            className="comic-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] text-white leading-[0.9] mb-8"
+            style={{ textShadow: '3px 3px 6px rgba(0,0,0,0.5)' }}
           >
             <span className="block">Create</span>
             <span className="block scribble-underline" style={{ color: 'var(--comic-red)' }}>
@@ -170,7 +151,7 @@ export default function Home() {
           {/* Subtext */}
           <motion.p
             variants={fadeUp}
-            className="text-base md:text-lg text-foreground/80 font-bold max-w-xl mx-auto mb-10 leading-relaxed"
+            className="text-base md:text-lg text-white/80 font-bold max-w-xl mx-auto mb-10 leading-relaxed"
             style={{ textShadow: '1px 1px 4px rgba(0,0,0,0.2)' }}
           >
             Unleash your imagination with AI. Turn your stories into
@@ -196,7 +177,7 @@ export default function Home() {
               <Button
                 onClick={connectWallet}
                 size="lg"
-                className="bg-card/90 backdrop-blur-sm text-foreground border-4 border-foreground shadow-[6px_6px_0px_0px_var(--shadow-color)] hover:shadow-[3px_3px_0px_0px_var(--shadow-color)] hover:-translate-y-0.5 transition-all duration-200 text-base font-black uppercase px-8 py-5 h-auto rounded-none"
+                className="bg-white/20 backdrop-blur-sm text-white border-4 border-white/60 shadow-[6px_6px_0px_0px_rgba(0,0,0,0.3)] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200 text-base font-black uppercase px-8 py-5 h-auto rounded-none"
               >
                 <Wallet className="mr-2 h-5 w-5" />
                 Connect Wallet
@@ -210,9 +191,10 @@ export default function Home() {
           className="absolute bottom-12 left-1/2 -translate-x-1/2 z-10"
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+          aria-hidden="true"
         >
-          <div className="w-5 h-8 border-2 border-foreground/30 rounded-full flex justify-center pt-1.5">
-            <div className="w-1 h-2.5 bg-foreground/40 rounded-full" />
+          <div className="w-5 h-8 border-2 border-white/30 rounded-full flex justify-center pt-1.5">
+            <div className="w-1 h-2.5 bg-white/40 rounded-full" />
           </div>
         </motion.div>
       </section>
@@ -386,16 +368,16 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════
-          FEATURED GENRES
+          FEATURED GENRES — Animated Marquee
           ═══════════════════════════════════════ */}
-      <section className="relative z-[1] py-24 bg-background/90 backdrop-blur-sm">
+      <section className="relative z-[1] py-24 bg-background/90 backdrop-blur-sm overflow-hidden">
         <div className="container mx-auto px-6">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             variants={stagger}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <motion.span variants={fadeUp} className="inline-block text-xs font-black uppercase tracking-[0.3em] text-[var(--comic-purple)] mb-4">
               Browse
@@ -407,37 +389,48 @@ export default function Home() {
               Dive into worlds of your choosing
             </motion.p>
           </motion.div>
+        </div>
 
-          <motion.div
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={stagger}
-          >
-            {genres.map((genre) => (
-              <motion.div
-                key={genre.name}
-                variants={scaleIn}
-                whileHover={{ y: -5, scale: 1.04, transition: { duration: 0.2 } }}
+        {/* Marquee container — full-width overflow */}
+        <div className="genre-marquee-wrapper">
+          <div className="genre-marquee">
+            {/* Render genres twice for seamless infinite loop */}
+            {[...genres, ...genres].map((genre, i) => (
+              <Link
+                key={`${genre.name}-${i}`}
+                href={`/genres?genre=${encodeURIComponent(genre.name.toLowerCase())}`}
+                className="genre-marquee-card group"
               >
-                <Link href={`/genres?genre=${genre.name.toLowerCase()}`}>
-                  <div
-                    className="bg-card border-4 border-foreground p-5 text-center cursor-pointer transition-all"
-                    style={{ boxShadow: '6px 6px 0px 0px var(--shadow-color)' }}
-                  >
+                <div className="relative w-56 h-72 flex-shrink-0 border-4 border-foreground overflow-hidden transition-transform duration-300 group-hover:scale-105"
+                  style={{ boxShadow: '6px 6px 0px 0px var(--shadow-color)' }}
+                >
+                  {/* Genre image */}
+                  <img
+                    src={genre.image}
+                    alt={genre.name}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    loading="lazy"
+                  />
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                  {/* Genre name */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4">
                     <div
-                      className="w-14 h-14 mx-auto mb-3 flex items-center justify-center border-3 border-foreground"
-                      style={{ backgroundColor: genre.color, color: '#fff', boxShadow: '3px 3px 0px 0px var(--shadow-color)' }}
+                      className="inline-block px-3 py-1 mb-2 text-[10px] font-black uppercase tracking-wider text-white rounded-sm"
+                      style={{ backgroundColor: genre.color }}
                     >
-                      {genre.icon}
+                      Genre
                     </div>
-                    <h3 className="font-black text-sm uppercase text-foreground">{genre.name}</h3>
+                    <h3 className="font-black text-lg uppercase text-white leading-tight"
+                      style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+                    >
+                      {genre.name}
+                    </h3>
                   </div>
-                </Link>
-              </motion.div>
+                </div>
+              </Link>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 

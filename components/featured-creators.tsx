@@ -95,14 +95,15 @@ export function FeaturedCreators() {
               Meet our top storytellers creating amazing content
             </p>
           </div>
-          <Link href="/community/creators">
-            <Button
+          <Button
+              asChild
               variant="outline"
               className="border-4 border-foreground font-black uppercase rounded-none shadow-[4px_4px_0px_0px_var(--shadow-color)]"
             >
-              View All
+              <Link href="/community/creators">
+                View All
+              </Link>
             </Button>
-          </Link>
         </div>
 
         {isLoading ? (

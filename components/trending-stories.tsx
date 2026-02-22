@@ -32,11 +32,11 @@ export function TrendingStories() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTrendingStories = async () => {
+  const fetchTrendingStories = async (signal?: AbortSignal) => {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/feed?limit=6&page=1');
+      const res = await fetch('/api/feed?limit=6&page=1', { signal });
       if (res.ok) {
         const json = await res.json();
         const feedData = json.data || json.stories || json;
@@ -60,9 +60,12 @@ export function TrendingStories() {
           setStories([]);
         }
       } else {
+        setError(`Server error: ${res.status} ${res.statusText}`);
         setStories([]);
       }
     } catch (err) {
+      // Ignore abort errors (component unmounted)
+      if (err instanceof DOMException && err.name === 'AbortError') return;
       console.error('Failed to fetch trending stories:', err);
       setError(err instanceof Error ? err.message : 'Unable to load stories');
       setStories([]);
@@ -72,7 +75,9 @@ export function TrendingStories() {
   };
 
   useEffect(() => {
-    fetchTrendingStories();
+    const controller = new AbortController();
+    fetchTrendingStories(controller.signal);
+    return () => controller.abort();
   }, []);
 
   const handleCreateSimilar = (genre: string) => {
@@ -117,36 +122,6 @@ export function TrendingStories() {
   return (
     <section className="py-4">
       <div className="container">
-        <div className="flex flex-col gap-4 mb-8 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold flex items-center text-foreground">
-              <TrendingUp className="mr-2 h-6 w-6" style={{ color: 'var(--comic-red)' }} />
-              Trending Stories
-            </h2>
-            <p className="text-muted-foreground mt-2 font-bold">
-              Discover the most popular stories on GroqTales
-            </p>
-          </div>
-          <div className="flex flex-col gap-3 md:flex-row md:gap-4">
-            <Link href="/stories">
-              <Button
-                variant="outline"
-                className="w-full md:w-auto border-4 border-foreground font-black uppercase rounded-none shadow-[4px_4px_0px_0px_var(--shadow-color)]"
-              >
-                <BookOpen className="mr-2 h-4 w-4" />
-                View All
-              </Button>
-            </Link>
-            <Button
-              variant="outline"
-              onClick={() => handleCreateSimilar('fantasy')}
-              className="w-full md:w-auto bg-[var(--comic-red)] text-white border-4 border-foreground font-black uppercase rounded-none shadow-[4px_4px_0px_0px_var(--shadow-color)] hover:bg-[var(--comic-red)]/90"
-            >
-              <PenSquare className="mr-2 h-4 w-4" />
-              Create Story
-            </Button>
-          </div>
-        </div>
 
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

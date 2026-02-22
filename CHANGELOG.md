@@ -20,6 +20,22 @@ Active full support: 1.3.5 (latest), 1.3.0 (previous). Security maintenance (cri
 - **Trending Stories Error Handling**: `components/trending-stories.tsx` now surfaces the actual error message (instead of hiding it behind "No Stories Yet") and provides a Retry button
 - **Spline Guide Markdown**: Added `text` language identifiers to unlabeled fenced code blocks in `docs/SPLINE_GUIDE.md` (markdownlint MD040)
 - **Changelog Deduplication**: Merged duplicate `## [1.3.5]` headers into a single section
+- **Feed API Static Render Fix**: Added `export const dynamic = 'force-dynamic'` to `app/api/feed/route.ts` — route uses `request.url` for query params, which requires dynamic rendering
+- **Missing 404 Page**: Created `app/not-found.tsx` with comic-style 404 page matching the site theme
+- **ServiceWorker 404**: Created `public/sw.js` minimal stub to prevent registration failure
+- **Dialog Accessibility**: Added hidden `DialogDescription` to `components/ui/dialog.tsx` to satisfy Radix `aria-describedby` requirement
+- **Hero Background**: Replaced Spline 3D with `background.jpeg` for the hero section — works in both light and dark modes with overlay
+- **Global Loading Screen**: Created `app/loading.tsx` using the existing `LoadingScreen` component for consistent loading across all pages
+- **Scroll Indicator Accessibility**: Added `aria-hidden="true"` to the decorative scroll indicator in `app/page.tsx`
+- **Trending Stories HTTP Errors**: `components/trending-stories.tsx` now surfaces 4xx/5xx responses as errors instead of silently showing empty state
+- **Trending Stories AbortController**: Added `AbortController` cleanup to prevent state updates on unmounted components
+- **Featured Creators HTML Validity**: Used `Button asChild` pattern in `components/featured-creators.tsx` to avoid invalid `<a><button>` nesting
+- **Animated Genre Marquee**: Replaced the 6-genre icon grid with a 12-genre animated marquee using real genre images, infinite right-to-left scrolling, hover-pause, edge fade masks, and `prefers-reduced-motion` support
+- **Adventure Image Fix**: Replaced broken europeanstudios.com hotlink with working Unsplash adventure image
+- **Genre Page Overhaul**: Rewrote `app/genres/page.tsx` — genre cards now have real images, expand/collapse famous works, "Write a Story" CTAs, and an interactive "Finding Your Genre" quiz (4 questions, emoji, progress bar, results)
+- **Documentation Page Overhaul**: Rewrote `app/docs/page.tsx` — step cards with numbered badges, quick links grid, expandable FAQ accordion with emojis, wallet setup guide, minting flow, and community CTA banner
+- **Duplicate Trending Header**: Removed redundant "Trending Stories" heading from `components/trending-stories.tsx` since the home page already provides its own "Trending Now" header
+- **Community Loading Screen**: Updated Community Hub page to use full-screen loading with `fullScreen` and `size="lg"` props, consistent with the global loading screen
 
 ### Documentation & Professional Standards
 
