@@ -96,7 +96,7 @@ server-side rendering issues (Spline requires browser APIs like `canvas` and `We
 
 ### Loading Flow
 
-```
+```text
 Page paint (instant)
   └─ Hero gradient background renders immediately
   └─ 1500ms timer starts
@@ -145,7 +145,7 @@ const Spline = dynamic(
 
 ## Where Spline Lives in the Codebase
 
-```
+```text
 GroqTales/
 ├── public/
 │   ├── storybook.spline          ← Primary 3D model (DO NOT MODIFY)

@@ -32,46 +32,46 @@ export function TrendingStories() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchTrendingStories = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const res = await fetch('/api/feed?limit=6&page=1');
-        if (res.ok) {
-          const json = await res.json();
-          const feedData = json.data || json.stories || json;
+  const fetchTrendingStories = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/feed?limit=6&page=1');
+      if (res.ok) {
+        const json = await res.json();
+        const feedData = json.data || json.stories || json;
 
-          if (Array.isArray(feedData) && feedData.length > 0) {
-            const mapped: TrendingStory[] = feedData.slice(0, 6).map((story: any, i: number) => ({
-              id: story._id || story.id || `story-${i + 1}`,
-              title: story.title || 'Untitled Story',
-              author: {
-                name: story.author?.name || story.authorName || 'Anonymous',
-                avatar: story.author?.avatar || story.authorAvatar || `https://api.dicebear.com/7.x/personas/svg?seed=author${i + 1}`,
-              },
-              genre: story.genre || 'General',
-              likes: story.likes ?? story.likesCount ?? 0,
-              comments: story.comments ?? story.commentsCount ?? 0,
-              views: story.views ?? story.viewsCount ?? 0,
-              coverImage: story.coverImage || story.image || `https://picsum.photos/seed/${story._id || i}/800/600`,
-            }));
-            setStories(mapped);
-          } else {
-            setStories([]);
-          }
+        if (Array.isArray(feedData) && feedData.length > 0) {
+          const mapped: TrendingStory[] = feedData.slice(0, 6).map((story: any, i: number) => ({
+            id: story._id || story.id || `story-${i + 1}`,
+            title: story.title || 'Untitled Story',
+            author: {
+              name: story.author?.name || story.authorName || 'Anonymous',
+              avatar: story.author?.avatar || story.authorAvatar || `https://api.dicebear.com/7.x/personas/svg?seed=author${i + 1}`,
+            },
+            genre: story.genre || 'General',
+            likes: story.likes ?? story.likesCount ?? 0,
+            comments: story.comments ?? story.commentsCount ?? 0,
+            views: story.views ?? story.viewsCount ?? 0,
+            coverImage: story.coverImage || story.image || `https://picsum.photos/seed/${story._id || i}/800/600`,
+          }));
+          setStories(mapped);
         } else {
           setStories([]);
         }
-      } catch (err) {
-        console.error('Failed to fetch trending stories:', err);
-        setError('Unable to load stories');
+      } else {
         setStories([]);
-      } finally {
-        setIsLoading(false);
       }
-    };
+    } catch (err) {
+      console.error('Failed to fetch trending stories:', err);
+      setError(err instanceof Error ? err.message : 'Unable to load stories');
+      setStories([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTrendingStories();
   }, []);
 
@@ -87,17 +87,28 @@ export function TrendingStories() {
         <div className="text-center py-12">
           <BookOpen className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
           <h3 className="text-xl font-black uppercase text-foreground mb-2">
-            No Stories Yet
+            Something Went Wrong
           </h3>
           <p className="text-muted-foreground font-bold mb-6">
-            Be the first to create a story on GroqTales!
+            {error}
           </p>
-          <Link href="/create/ai-story">
-            <Button className="bg-[var(--comic-red)] text-white border-4 border-foreground shadow-[4px_4px_0px_0px_var(--shadow-color)] font-black uppercase rounded-none">
-              <PenSquare className="mr-2 h-4 w-4" />
-              Create Your First Story
+          <div className="flex flex-wrap gap-4 justify-center">
+            <Button
+              onClick={() => fetchTrendingStories()}
+              className="bg-foreground text-background border-4 border-foreground shadow-[4px_4px_0px_0px_var(--shadow-color)] font-black uppercase rounded-none"
+            >
+              Retry
             </Button>
-          </Link>
+            <Link href="/create/ai-story">
+              <Button
+                variant="outline"
+                className="border-4 border-foreground shadow-[4px_4px_0px_0px_var(--shadow-color)] font-black uppercase rounded-none"
+              >
+                <PenSquare className="mr-2 h-4 w-4" />
+                Create a Story
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     );

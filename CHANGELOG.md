@@ -11,6 +11,16 @@ Active full support: 1.3.5 (latest), 1.3.0 (previous). Security maintenance (cri
 
 ## [1.3.5] - 2026-02-21
 
+### Fixed
+
+- **Vercel Deployment Crash (Spline 3D)**: Added `transpilePackages` for `@splinetool/react-spline` and `@splinetool/runtime` in `next.config.js` so Next.js properly compiles Spline's class inheritance chain through its SWC pipeline instead of treating them as pre-compiled externals
+- **Resilient Spline Loading**: Added `.catch()` fallback to the Spline dynamic import in `app/page.tsx` — if the 3D model fails to load in any environment, the page gracefully degrades to the gradient background instead of crashing
+- **Featured Creators Validation**: `components/featured-creators.tsx` now validates creator-shaped objects (requires `username`/`followersCount`/`profileImage`) instead of fabricating metadata; non-matching items are filtered out
+- **Footer Health Indicator**: Wired the static "Online" indicator in `components/footer.tsx` to the real `/api/health/db` endpoint — now dynamically shows Online/Degraded/Offline/Checking state
+- **Trending Stories Error Handling**: `components/trending-stories.tsx` now surfaces the actual error message (instead of hiding it behind "No Stories Yet") and provides a Retry button
+- **Spline Guide Markdown**: Added `text` language identifiers to unlabeled fenced code blocks in `docs/SPLINE_GUIDE.md` (markdownlint MD040)
+- **Changelog Deduplication**: Merged duplicate `## [1.3.5]` headers into a single section
+
 ### Documentation & Professional Standards
 
 - **Created Professional Pull Request Template (`temp.md`)**: Implemented a standardized, professional PR template for Indie Hub Org members.
@@ -27,9 +37,6 @@ Active full support: 1.3.5 (latest), 1.3.0 (previous). Security maintenance (cri
 - **Footer Brand**: Replaced logo image/container with bold italic "GroqTales" branded text.
 - **Footer Layout**: Moved copyright and status info below the neon sign for a more balanced design.
 
----
-
-## [1.3.5] - 2026-02-21
 ### Security Policy Refresh — 2026-02-21
 
 - **Updated `SECURITY.md`** to reflect current version matrix (1.3.5 latest, 1.3.0 previous, 1.1.0 maintenance, < 1.1.0 EoSS)

@@ -17,13 +17,31 @@ import {
   Zap,
 } from 'lucide-react';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { AdminLoginModal } from './admin-login-modal';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
   const [showAdminModal, setShowAdminModal] = useState(false);
+  const [healthStatus, setHealthStatus] = useState<'loading' | 'ok' | 'degraded' | 'down'>('loading');
+
+  useEffect(() => {
+    const checkHealth = async () => {
+      try {
+        const res = await fetch('/api/health/db', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          setHealthStatus(data.status === 'ok' ? 'ok' : data.status === 'degraded' ? 'degraded' : 'down');
+        } else {
+          setHealthStatus('down');
+        }
+      } catch {
+        setHealthStatus('down');
+      }
+    };
+    checkHealth();
+  }, []);
 
   const socialLinks = [
     {
@@ -225,9 +243,35 @@ export function Footer() {
             <span className="text-primary dark:text-accent font-black">Groq AI</span>
           </p>
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-500 animate-pulse rounded-full" />
-            <span className="text-green-600 dark:text-green-400 font-black">
-              Online
+            <span
+              className={`w-2 h-2 rounded-full ${
+                healthStatus === 'ok'
+                  ? 'bg-green-500 animate-pulse'
+                  : healthStatus === 'degraded'
+                    ? 'bg-yellow-500 animate-pulse'
+                    : healthStatus === 'down'
+                      ? 'bg-red-500'
+                      : 'bg-gray-400 animate-pulse'
+              }`}
+            />
+            <span
+              className={`font-black ${
+                healthStatus === 'ok'
+                  ? 'text-green-600 dark:text-green-400'
+                  : healthStatus === 'degraded'
+                    ? 'text-yellow-600 dark:text-yellow-400'
+                    : healthStatus === 'down'
+                      ? 'text-red-600 dark:text-red-400'
+                      : 'text-gray-500 dark:text-gray-400'
+              }`}
+            >
+              {healthStatus === 'ok'
+                ? 'Online'
+                : healthStatus === 'degraded'
+                  ? 'Degraded'
+                  : healthStatus === 'down'
+                    ? 'Offline'
+                    : 'Checking…'}
             </span>
           </div>
         </div>

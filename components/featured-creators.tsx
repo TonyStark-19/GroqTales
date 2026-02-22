@@ -38,18 +38,27 @@ export function FeaturedCreators() {
           const data = json.data || json.creators || json;
 
           if (Array.isArray(data) && data.length > 0) {
-            const mapped: Creator[] = data.slice(0, 4).map((c: any, i: number) => ({
-              id: c._id || c.id || `creator-${i + 1}`,
-              name: c.name || c.authorName || 'Creator',
-              username: c.username || `@creator${i + 1}`,
-              avatar: c.avatar || c.profileImage || `https://api.dicebear.com/7.x/personas/svg?seed=creator${i + 1}`,
-              bio: c.bio || c.description || 'Creative storyteller on GroqTales',
-              followers: c.followers ?? c.followersCount ?? 0,
-              stories: c.stories ?? c.storiesCount ?? 0,
-              featured: true,
-              rating: c.rating ?? 4.5,
-              tags: c.tags || c.genres || ['Storytelling'],
-            }));
+            // Only map items that are actually creator-shaped objects
+            const mapped: Creator[] = data
+              .filter((c: any) =>
+                // Require at least one creator-identifying field
+                c.username || c.followersCount !== undefined || c.profileImage
+              )
+              .slice(0, 4)
+              .map((c: any) => ({
+                id: c._id || c.id || '',
+                name: c.name || c.authorName || 'Unknown Creator',
+                username: c.username || '',
+                avatar: c.avatar || c.profileImage || `https://api.dicebear.com/7.x/personas/svg?seed=${c._id || c.id || 'default'}`,
+                bio: c.bio || c.description || '',
+                followers: c.followers ?? c.followersCount ?? 0,
+                stories: c.stories ?? c.storiesCount ?? 0,
+                featured: c.featured ?? false,
+                rating: c.rating ?? 0,
+                tags: c.tags || c.genres || [],
+              }))
+              // Only keep creators with a valid ID (to avoid linking to bad profile routes)
+              .filter((c) => c.id !== '');
             setCreators(mapped);
           } else {
             setCreators([]);

@@ -22,7 +22,10 @@ import { Button } from '@/components/ui/button';
 
 // Lazy-load Spline ONLY after the page has rendered
 const Spline = dynamic(
-  () => import('@splinetool/react-spline').then((mod) => mod.default || mod),
+  () =>
+    import('@splinetool/react-spline')
+      .then((mod) => mod.default || mod)
+      .catch(() => () => null),
   { ssr: false, loading: () => null }
 );
 
